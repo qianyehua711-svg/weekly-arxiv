@@ -44,7 +44,7 @@
   };
   const saveBookmarks=()=>localStorage.setItem('daily-arxiv-bookmarks',JSON.stringify([...bookmarks]));
   const renderList=()=>{
-    const list=$('paper-list');list.replaceChildren();const items=filtered();$('result-count').textContent=items.length+' 篇';$('total-counter').textContent=papers.length;
+    const list=$('paper-list');list.replaceChildren();const items=filtered();$('result-count').textContent=items.length+' 篇';$('total-counter').textContent=new Set(papers.filter(p=>p.id&&p.title&&p.url).map(p=>p.id)).size;
     $('no-results').classList.toggle('hidden',items.length>0);
     if(items.length && !items.some(p=>p.id===selectedId))selectedId=items[0].id;
     if(!items.length)selectedId=null;
