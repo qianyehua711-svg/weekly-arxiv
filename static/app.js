@@ -67,10 +67,6 @@
     area.append(el('div','detail-overline',p.categories.join(' · ').toUpperCase()+'  /  '+p.date));area.append(el('h2','detail-title',p.title));area.append(el('div','detail-meta',p.authors));
     if(p.score!==null){const score=el('div','score-row');score.append(el('span','score-badge',`相关性评分 ${p.score}/100`));if(p.disposition)score.append(el('span','status-badge',p.disposition));area.append(score);}
     const section=(heading,body,insight=false)=>{if(!body)return;const s=el('section','detail-section'+(insight?' insight':''));s.append(el('h3','',heading),el('p','',body));area.append(s);};
-    const metricLines=[];
-    if(p.journal||p.journal_ref)metricLines.push('???'+(p.journal||p.journal_ref));
-    metricLines.push(p.impact_factor!==null?('Impact factor (IF): '+p.impact_factor+' | '+(p.impact_factor_year||'year not specified')+(p.impact_factor_source?' ? Source: '+p.impact_factor_source:'')):'Impact factor: no verified data');
-    section('??????',metricLines.join('\\n'));
     const btns=el('div','detail-actions');[[p.url,'↗ arXiv 原文'],[p.pdf_url,'↓ PDF 原文']].forEach(([url,label])=>{const safe=safeUrl(url);if(safe){const a=el('a','primary-btn',label);a.href=safe;a.target='_blank';a.rel='noopener noreferrer';btns.append(a);}});
     const star=el('button','outline-btn',bookmarks.has(p.id)?'★ 已收藏':'☆ 收藏');star.onclick=()=>{if(bookmarks.has(p.id))bookmarks.delete(p.id);else bookmarks.add(p.id);saveBookmarks();renderList();};btns.append(star);area.append(btns);
     section('研究关联 / 评分依据',p.insight,true);
