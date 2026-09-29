@@ -50,7 +50,7 @@
     if(!items.length)selectedId=null;
     for(const p of items){
       const card=el('article','paper-card'+(p.id===selectedId?' selected':''));card.tabIndex=0;card.setAttribute('role','button');card.setAttribute('aria-label','查看 '+p.title);
-      const top=el('div','paper-card-top'),categoryTags=el('div','category-tags');p.categories.slice(0,4).forEach(name=>categoryTags.append(el('span','category-tag'+(['LIS/FLIER','\u5bcc\u52d2\u70ef'].includes(name)?' category-focus':''),name)));top.append(categoryTags,el('span','paper-date',p.date));card.append(top);
+      const top=el('div','paper-card-top'),categoryTags=el('div','category-tags');p.categories.slice(0,4).forEach(name=>categoryTags.append(el('span','category-tag'+(['LIS/FLIER','PAH','\u5bcc\u52d2\u70ef'].includes(name)?' category-focus':''),name)));top.append(categoryTags,el('span','paper-date',p.date));card.append(top);
       if(p.score!==null||p.impact_factor!==null){const rating=el('div','score-row');if(p.score!==null)rating.append(el('span','score-badge','Relevance '+p.score+'/100'));if(p.impact_factor!==null)rating.append(el('span','impact-factor-badge','IF '+p.impact_factor));if(p.disposition)rating.append(el('span','status-badge',p.disposition));card.append(rating);}
       const title=el('h2');highlight(title,p.title,prefs.keywords||[]);card.append(title);
       const authors=el('div','paper-author');highlight(authors,p.authors,prefs.authors||[]);card.append(authors);
@@ -75,7 +75,7 @@
     if(p.matched_research_axes.length){const s=el('section','detail-section');s.append(el('h3','','匹配研究轴'));s.append(el('p','',p.matched_research_axes.join('、')));area.append(s);}
     if(p.keywords.length){const s=el('section','detail-section');s.append(el('h3','','关键词'));const tags=el('div','tag-row');p.keywords.forEach(k=>tags.append(el('span','tag',k)));s.append(tags);area.append(s);}
   };
-  const categoryCatalog=['LIS/FLIER','行星状星云','光学离子诊断','AGB 星','原行星状星云','恒星晚期演化','星周包层','恒星风与质量损失','天体化学','毫米波分子谱线','碳链分子','富勒烯','未识别红外发射带','量子化学','机器学习','FAST 中性氢观测','红外 H₂ / Brγ','分子丰度与化学组成','分子谱线巡天与指认','分子光谱与碰撞数据','实验天体化学与星际冰','气尘与表面化学','辐射转移与化学模型','分子云与星际介质观测'];
+  const categoryCatalog=['LIS/FLIER','行星状星云','光学离子诊断','AGB 星','原行星状星云','恒星晚期演化','星周包层','恒星风与质量损失','天体化学','毫米波分子谱线','碳链分子','PAH','富勒烯','未识别红外发射带','量子化学','机器学习','FAST 中性氢观测','红外 H₂ / Brγ','分子丰度与化学组成','分子谱线巡天与指认','分子光谱与碰撞数据','实验天体化学与星际冰','气尘与表面化学','辐射转移与化学模型','分子云与星际介质观测'];
   const categories=[...new Set([...papers.flatMap(p=>p.categories),...categoryCatalog])].sort((a,b)=>a.localeCompare(b));categories.forEach(c=>{const o=el('option','',`${c}（${papers.filter(p=>p.categories.includes(c)).length}篇）`);o.value=c;$('category').append(o);});
   $('sort').querySelector('[value="impact-factor"]').textContent='Impact factor sort ('+papers.filter(p=>p.impact_factor!==null).length+' papers)';
   if(config.generated_at)$('data-updated').textContent='更新：'+config.generated_at;
