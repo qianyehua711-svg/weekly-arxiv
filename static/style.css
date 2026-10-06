@@ -3,3 +3,10 @@
 .score-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:4px 0 10px}.score-badge{display:inline-flex;padding:2px 8px;border-radius:999px;background:#e8f5ef;color:#26704d;font-size:10px;font-weight:750}.status-badge{display:inline-flex;padding:2px 8px;border-radius:999px;background:#fff3df;color:#8a5a13;font-size:10px;font-weight:750}
 .category-tags{display:flex;align-items:center;gap:5px;flex-wrap:wrap;min-width:0}.category-tag.category-focus{background:#e1ebff;color:#204c88;border:1px solid #c8d8f4}.paper-card-top{align-items:flex-start}.paper-date{white-space:nowrap;padding-top:3px}
 .impact-factor-badge{display:inline-flex;padding:2px 8px;border-radius:999px;background:#f2ebff;color:#6441a5;font-size:10px;font-weight:750}
+/* Report dates stay distinct from publication dates, including repeat reports. */
+.paper-dates{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.reported-badge{display:flex;flex-direction:column;align-items:flex-end;gap:1px;padding:5px 8px;border:1px solid #b9dece;border-radius:7px;background:#e8f5ef;color:#236246;font-size:11px;line-height:1.5;white-space:nowrap}
+.reported-label{font-weight:750}.report-date{font-variant-numeric:tabular-nums}
+.paper-title-row{display:flex;align-items:flex-start;gap:7px}.paper-title-row h2{flex:1;min-width:0;margin-right:0}
+.paper-title-row .bookmark{position:static;flex-shrink:0;line-height:1.2}
+.detail-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.detail-heading .reported-badge{flex-shrink:0}
