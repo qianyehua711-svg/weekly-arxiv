@@ -61,6 +61,7 @@
       const top=el('div','paper-card-top'),categoryTags=el('div','category-tags');p.categories.filter(name=>name!=='已汇报').slice(0,4).forEach(name=>categoryTags.append(el('span','category-tag'+(['LIS/FLIER','PAH','\u5bcc\u52d2\u70ef'].includes(name)?' category-focus':''),name)));
       const dates=el('div','paper-dates');if(p.report_dates.length)dates.append(reportBadge(p));const published=el('span','paper-date',p.date);published.title='文献发表日期';dates.append(published);top.append(categoryTags,dates);card.append(top);
       if(p.score!==null||p.impact_factor!==null){const rating=el('div','score-row');if(p.score!==null)rating.append(el('span','score-badge','Relevance '+p.score+'/100'));if(p.impact_factor!==null)rating.append(el('span','impact-factor-badge','IF '+p.impact_factor));if(p.disposition)rating.append(el('span','status-badge',p.disposition));card.append(rating);}
+      if(p.disposition==='REVIEW_PENDING'&&p.score===null)card.append(el('span','status-badge','待评分'));
       const titleRow=el('div','paper-title-row'),title=el('h2');highlight(title,p.title,prefs.keywords||[]);titleRow.append(title);card.append(titleRow);
       const authors=el('div','paper-author');highlight(authors,p.authors,prefs.authors||[]);card.append(authors);
       card.append(el('div','paper-preview',p.abstract_zh||p.abstract_en||'暂无摘要'));
@@ -75,6 +76,7 @@
     if(!p){area.append(el('div','empty-detail','没有选中的论文'));return;}
     const heading=el('div','detail-heading');heading.append(el('div','detail-overline',p.categories.filter(name=>name!=='已汇报').join(' · ').toUpperCase()+'  /  '+p.date));if(p.report_dates.length)heading.append(reportBadge(p));area.append(heading);area.append(el('h2','detail-title',p.title));area.append(el('div','detail-meta',p.authors));
     if(p.score!==null){const score=el('div','score-row');score.append(el('span','score-badge',`相关性评分 ${p.score}/100`));if(p.disposition)score.append(el('span','status-badge',p.disposition));area.append(score);}
+    if(p.disposition==='REVIEW_PENDING'&&p.score===null)area.append(el('span','status-badge','待评分 · 后续自动重试'));
     const section=(heading,body,insight=false)=>{if(!body)return;const s=el('section','detail-section'+(insight?' insight':''));s.append(el('h3','',heading),el('p','',body));area.append(s);};
     const btns=el('div','detail-actions');[[p.url,'↗ arXiv 原文'],[p.pdf_url,'↓ PDF 原文']].forEach(([url,label])=>{const safe=safeUrl(url);if(safe){const a=el('a','primary-btn',label);a.href=safe;a.target='_blank';a.rel='noopener noreferrer';btns.append(a);}});
     const star=el('button','outline-btn',bookmarks.has(p.id)?'★ 已收藏':'☆ 收藏');star.onclick=()=>{if(bookmarks.has(p.id))bookmarks.delete(p.id);else bookmarks.add(p.id);saveBookmarks();renderList();};btns.append(star);area.append(btns);
@@ -87,7 +89,10 @@
   const categoryCatalog=['LIS/FLIER','行星状星云','光学离子诊断','AGB 星','原行星状星云','恒星晚期演化','星周包层','恒星风与质量损失','天体化学','毫米波分子谱线','碳链分子','PAH','富勒烯','未识别红外发射带','量子化学','机器学习','FAST 中性氢观测','红外 H₂ / Brγ','分子丰度与化学组成','分子谱线巡天与指认','分子光谱与碰撞数据','实验天体化学与星际冰','气尘与表面化学','辐射转移与化学模型','分子云与星际介质观测'];
   const categories=['已汇报',...[...new Set([...papers.flatMap(p=>p.categories),...categoryCatalog])].filter(c=>c!=='已汇报').sort((a,b)=>a.localeCompare(b))];categories.forEach(c=>{const o=el('option','',`${c}（${papers.filter(p=>p.categories.includes(c)).length}篇）`);o.value=c;$('category').append(o);});
   $('sort').querySelector('[value="impact-factor"]').textContent='Impact factor sort ('+papers.filter(p=>p.impact_factor!==null).length+' papers)';
-  if(config.generated_at)$('data-updated').textContent='更新：'+config.generated_at;
+  const status=config.search_status||{};
+  $('data-updated').textContent=status.last_fetch_at?'最近检索：'+status.last_fetch_at.slice(0,16).replace('T',' '):'检索日期未记录';
+  if(status.pending_reviews)$('data-updated').textContent+=' · 待评分 '+status.pending_reviews+' 篇';
+  $('data-updated').title=[status.schedule||'',status.query_start&&status.query_end?'检索提交日期范围：'+status.query_start+' 至 '+status.query_end:'','网页生成：'+(config.generated_at||'')].filter(Boolean).join('\n');
   for(const id of ['keyword','category','date-from','date-to','sort','bookmarks-only'])$(id).addEventListener(id==='keyword'?'input':'change',renderList);
   $('clear-dates').onclick=()=>{$('date-from').value='';$('date-to').value='';renderList();};
   const dialog=$('settings-dialog');$('open-settings').onclick=()=>{$('interests').value=(prefs.keywords||[]).join(', ');$('authors').value=(prefs.authors||[]).join(', ');dialog.showModal();};
